@@ -58,6 +58,10 @@ class TestGetCredentialsFromEnv:
 
     def test_get_credentials_from_env_success(self):
         """Test successful retrieval of credentials from environment"""
+        # Save original values
+        original_user = os.environ.get("USER")
+        original_password = os.environ.get("PASSWORD")
+        
         os.environ["USER"] = "envuser"
         os.environ["PASSWORD"] = "envpass"
         
@@ -66,12 +70,22 @@ class TestGetCredentialsFromEnv:
             assert username == "envuser"
             assert password == "envpass"
         finally:
-            # Clean up
-            os.environ.pop("USER", None)
-            os.environ.pop("PASSWORD", None)
+            # Restore original values
+            if original_user is not None:
+                os.environ["USER"] = original_user
+            else:
+                os.environ.pop("USER", None)
+            if original_password is not None:
+                os.environ["PASSWORD"] = original_password
+            else:
+                os.environ.pop("PASSWORD", None)
 
     def test_get_credentials_from_env_missing_user(self):
         """Test that ValueError is raised when USER is missing"""
+        # Save original values
+        original_user = os.environ.get("USER")
+        original_password = os.environ.get("PASSWORD")
+        
         # Ensure USER is not set
         os.environ.pop("USER", None)
         os.environ["PASSWORD"] = "envpass"
@@ -80,10 +94,20 @@ class TestGetCredentialsFromEnv:
             with pytest.raises(ValueError, match="USER environment variable is required"):
                 get_credentials_from_env()
         finally:
-            os.environ.pop("PASSWORD", None)
+            # Restore original values
+            if original_user is not None:
+                os.environ["USER"] = original_user
+            if original_password is not None:
+                os.environ["PASSWORD"] = original_password
+            else:
+                os.environ.pop("PASSWORD", None)
 
     def test_get_credentials_from_env_missing_password(self):
         """Test that ValueError is raised when PASSWORD is missing"""
+        # Save original values
+        original_user = os.environ.get("USER")
+        original_password = os.environ.get("PASSWORD")
+        
         os.environ["USER"] = "envuser"
         os.environ.pop("PASSWORD", None)
         
@@ -91,12 +115,29 @@ class TestGetCredentialsFromEnv:
             with pytest.raises(ValueError, match="PASSWORD environment variable is required"):
                 get_credentials_from_env()
         finally:
-            os.environ.pop("USER", None)
+            # Restore original values
+            if original_user is not None:
+                os.environ["USER"] = original_user
+            else:
+                os.environ.pop("USER", None)
+            if original_password is not None:
+                os.environ["PASSWORD"] = original_password
 
     def test_get_credentials_from_env_missing_both(self):
         """Test that ValueError is raised when both are missing"""
+        # Save original values
+        original_user = os.environ.get("USER")
+        original_password = os.environ.get("PASSWORD")
+        
         os.environ.pop("USER", None)
         os.environ.pop("PASSWORD", None)
         
-        with pytest.raises(ValueError, match="USER environment variable is required"):
-            get_credentials_from_env()
+        try:
+            with pytest.raises(ValueError, match="USER environment variable is required"):
+                get_credentials_from_env()
+        finally:
+            # Restore original values
+            if original_user is not None:
+                os.environ["USER"] = original_user
+            if original_password is not None:
+                os.environ["PASSWORD"] = original_password
