@@ -19,6 +19,10 @@ docker pull ghcr.io/nnarain/plane-caldav-server:v1.0.0
 ### Run the Container
 
 ```bash
+# Create a directory for storing CalDAV collections
+mkdir -p collections
+
+# Run the container
 docker run -d \
   -p 5232:5232 \
   -e PLANE_URL="https://your-plane-instance.com" \

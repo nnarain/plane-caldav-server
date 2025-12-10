@@ -11,6 +11,7 @@ on:
     branches:
       - main
       - master
+    # Note: PRs will build the image for validation but won't push to registry
 
 env:
   REGISTRY: ghcr.io
