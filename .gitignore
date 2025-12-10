@@ -1,0 +1,55 @@
+# Python
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+*.manifest
+*.spec
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Project specific
+collections/
+*.ics
+.Radicale.props
+
+# Environment
+.env
+.env.local
+config.ini
+
+# Old root-level files (moved to src/)
+/server.py
+/calendar_utils.py
+/plane.py
+/plane_client.py
+/setup_calendar.py
+/client.py
+/client_read_todos.py
+/__init__.py
+/propfind.xml
