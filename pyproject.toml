@@ -29,6 +29,7 @@ dependencies = [
     "caldav>=1.3.0",
     "icalendar>=5.0.0",
     "requests>=2.31.0",
+    "passlib>=1.7.4",
 ]
 
 [project.optional-dependencies]

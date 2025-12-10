@@ -1,6 +1,7 @@
 """
 CalDAV server application that integrates with Plane Project Management.
 """
+import os
 from radicale import Application
 from radicale import config
 from wsgiref.simple_server import make_server
@@ -12,6 +13,7 @@ from plane_caldav_server.calendar_utils import (
     add_todo_to_calendar,
     list_todos
 )
+from plane_caldav_server.auth_utils import generate_htpasswd_file
 
 
 def run_server(args):
@@ -79,6 +81,7 @@ def main():
     parser.add_argument("--port", type=int, default=5232, help="Port to run the server on")
     parser.add_argument("--storage-folder", type=str, default="./collections", help="Folder to store calendar collections")
     parser.add_argument("--user", type=str, default="testuser", help="Username for X-Remote-User authentication")
+    parser.add_argument("--password", type=str, help="Password for authentication")
     parser.add_argument("--htpasswd-file", type=str, default="./htpasswd", help="Path to htpasswd file")
 
     parser.add_argument("--plane-url", type=str, help="Base URL for Plane Project Management API")
@@ -87,6 +90,19 @@ def main():
     parser.add_argument("--sync-only", action="store_true", help="Only sync tasks from Plane, don't start server")
 
     args = parser.parse_args()
+
+    # Generate htpasswd file from environment variables or command line args
+    username = os.environ.get("USER", args.user)
+    password = os.environ.get("PASSWORD", args.password)
+    
+    if password:
+        print(f"Generating htpasswd file for user: {username}")
+        generate_htpasswd_file(args.htpasswd_file, username, password)
+    else:
+        print(f"No password provided, using existing htpasswd file: {args.htpasswd_file}")
+    
+    # Update args.user to use the environment variable if set
+    args.user = username
 
     # Sync tasks from Plane if configured
     if args.plane_url and args.api_key:
