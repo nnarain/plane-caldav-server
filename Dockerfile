@@ -24,7 +24,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy application code
 COPY src/ ./src/
 COPY pyproject.toml .
-COPY htpasswd /app/htpasswd
 
 # Install the package
 RUN pip install --no-cache-dir -e .
@@ -38,6 +37,7 @@ ENV API_KEY="" \
     WORKSPACE="default" \
     STORAGE_FOLDER="/app/collections" \
     USER="user" \
+    PASSWORD="" \
     HOST="0.0.0.0" \
     PORT="5232"
 
@@ -51,6 +51,11 @@ set -e
 
 # Build command with optional Plane arguments
 CMD="python -m plane_caldav_server.server --host \$HOST --port \$PORT --storage-folder \$STORAGE_FOLDER --user \$USER --htpasswd-file /app/htpasswd"
+
+# Add password if provided
+if [ -n "\$PASSWORD" ]; then
+    CMD="\$CMD --password \$PASSWORD"
+fi
 
 if [ -n "\$PLANE_URL" ] && [ -n "\$API_KEY" ]; then
     CMD="\$CMD --plane-url \$PLANE_URL --api-key \$API_KEY --workspace \$WORKSPACE"

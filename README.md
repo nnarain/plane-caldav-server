@@ -29,6 +29,7 @@ docker run -d \
   -e API_KEY="your-api-key" \
   -e WORKSPACE="your-workspace" \
   -e USER="your-username" \
+  -e PASSWORD="your-password" \
   -v $(pwd)/collections:/app/collections \
   ghcr.io/nnarain/plane-caldav-server:latest
 ```
@@ -40,5 +41,6 @@ docker run -d \
 - `WORKSPACE`: Plane workspace name (default: "default")
 - `STORAGE_FOLDER`: Storage folder for CalDAV collections (default: "/app/collections")
 - `USER`: CalDAV username (default: "user")
+- `PASSWORD`: CalDAV password (required for authentication)
 - `HOST`: Server host (default: "0.0.0.0")
 - `PORT`: Server port (default: "5232")
