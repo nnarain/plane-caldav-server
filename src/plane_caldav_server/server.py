@@ -2,7 +2,6 @@
 CalDAV server application that integrates with Plane Project Management.
 """
 import os
-from radicale import Application
 from radicale import config
 from wsgiref.simple_server import make_server
 from argparse import ArgumentParser
@@ -14,9 +13,11 @@ from plane_caldav_server.calendar_utils import (
     list_todos
 )
 from plane_caldav_server.auth_utils import generate_htpasswd_file
+from plane_caldav_server.sync_manager import SyncManager
+from plane_caldav_server.caldav_app import PlaneCalDAVApplication
 
 
-def run_server(args):
+def run_server(args, sync_manager=None):
     """Start the CalDAV server with the given configuration."""
     # Use the load function to create a proper configuration
     configuration = config.load()
@@ -31,7 +32,7 @@ def run_server(args):
         }
     }, "custom config")
 
-    app = Application(configuration)
+    app = PlaneCalDAVApplication(configuration, sync_manager)
 
     with make_server(args.host, args.port, app) as httpd:
         print(f"Serving on {args.host}:{args.port}...")
@@ -104,12 +105,29 @@ def main():
     # Update args.user to use the environment variable if set
     args.user = username
 
-    # Sync tasks from Plane if configured
+    # Create sync manager if Plane is configured
+    sync_manager = None
     if args.plane_url and args.api_key:
-        sync_plane_tasks(args)
+        sync_manager = SyncManager(
+            plane_url=args.plane_url,
+            api_key=args.api_key,
+            workspace=args.workspace,
+            storage_folder=args.storage_folder,
+            user=args.user,
+            calendar_name="plane-tasks"
+        )
+        
+        # Perform initial sync
+        print("Performing initial sync from Plane...")
+        sync_manager.sync(force=True)
+        print("Initial sync completed")
+        
+        if args.sync_only:
+            print("Sync-only mode, exiting...")
+            return
 
     # Start the CalDAV server
-    run_server(args)
+    run_server(args, sync_manager)
 
 
 if __name__ == "__main__":

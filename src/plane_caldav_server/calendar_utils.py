@@ -121,7 +121,8 @@ def add_todo_to_calendar(
     description: str = "",
     priority: int = 0,
     status: str = "NEEDS-ACTION",
-    due: datetime = None
+    due: datetime = None,
+    uid: str = None
 ) -> Path:
     """
     Create and save a TODO to a calendar collection.
@@ -133,11 +134,12 @@ def add_todo_to_calendar(
         priority: Priority (0=undefined, 1=highest, 9=lowest)
         status: Status (NEEDS-ACTION, COMPLETED, IN-PROCESS, CANCELLED)
         due: Due date
+        uid: Unique identifier (auto-generated if not provided)
         
     Returns:
         Path to the saved TODO file
     """
-    cal = create_todo(summary, description, priority, status, due)
+    cal = create_todo(summary, description, priority, status, due, uid)
     return save_todo_to_file(cal, calendar_path)
 
 
