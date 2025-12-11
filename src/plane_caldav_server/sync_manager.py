@@ -74,7 +74,13 @@ class SyncManager:
                 self._last_sync_time = current_time
                 return True
             except Exception as e:
-                print(f"Error during sync: {e}")
+                import traceback
+
+                print(
+                    f"Error during Plane sync (workspace={self.workspace}, "
+                    f"user={self.user}, calendar={self.calendar_name}): {e}"
+                )
+                print(f"Traceback:\n{traceback.format_exc()}")
                 return False
 
     def _perform_sync(self):
