@@ -5,6 +5,7 @@
 #
 import requests
 
+
 class PlaneAPI:
     def __init__(self, url, api_key):
         self.api_key = api_key
@@ -40,13 +41,15 @@ class PlaneAPI:
             target_date = item.get("target_date")
             completed_at = item.get("completed_at")
 
-            work_items.append({
-                "id": item_id,
-                "name": item_name,
-                "description": description,
-                "target_date": target_date,
-                "completed_at": completed_at
-            })
+            work_items.append(
+                {
+                    "id": item_id,
+                    "name": item_name,
+                    "description": description,
+                    "target_date": target_date,
+                    "completed_at": completed_at,
+                }
+            )
 
         return work_items
 
@@ -58,9 +61,7 @@ class PlaneAPI:
         return response.json()
 
     def _create_headers(self):
-        return {
-            "X-API-Key": f"{self.api_key}"
-        }
-    
+        return {"X-API-Key": f"{self.api_key}"}
+
     def _get_work_items_endpoint(self, workspace, project):
         return f"{self._base_api_url}/workspaces/{workspace}/projects/{project}/work-items"
