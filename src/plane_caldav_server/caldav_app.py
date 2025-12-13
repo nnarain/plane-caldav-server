@@ -23,7 +23,13 @@ class PlaneCalDAVApplication(Application):
         self.sync_manager = sync_manager
 
     def do_GET(
-        self, environ: Mapping[str, Any], base_prefix: str, path: str, user: str
+        self, 
+        environ: Mapping[str, Any], 
+        base_prefix: str, 
+        path: str, 
+        user: str,
+        *args,
+        **kwargs
     ) -> Tuple[int, Mapping[str, str], Iterable[bytes]]:
         """
         Handle GET requests with sync before fetching data.
@@ -33,6 +39,8 @@ class PlaneCalDAVApplication(Application):
             base_prefix: Base URL prefix
             path: Request path
             user: Authenticated user
+            *args: Additional positional arguments
+            **kwargs: Additional keyword arguments
 
         Returns:
             Tuple of (status_code, headers, body)
@@ -42,10 +50,16 @@ class PlaneCalDAVApplication(Application):
             self.sync_manager.sync()
 
         # Call parent implementation
-        return super().do_GET(environ, base_prefix, path, user)
+        return super().do_GET(environ, base_prefix, path, user, *args, **kwargs)
 
     def do_POST(
-        self, environ: Mapping[str, Any], base_prefix: str, path: str, user: str
+        self,
+        environ: Mapping[str, Any],
+        base_prefix: str,
+        path: str,
+        user: str,
+        *args,
+        **kwargs
     ) -> Tuple[int, Mapping[str, str], Iterable[bytes]]:
         """
         Handle POST requests with sync before updating data.
@@ -55,6 +69,8 @@ class PlaneCalDAVApplication(Application):
             base_prefix: Base URL prefix
             path: Request path
             user: Authenticated user
+            *args: Additional positional arguments
+            **kwargs: Additional keyword arguments
 
         Returns:
             Tuple of (status_code, headers, body)
@@ -64,4 +80,4 @@ class PlaneCalDAVApplication(Application):
             self.sync_manager.sync()
 
         # Call parent implementation
-        return super().do_POST(environ, base_prefix, path, user)
+        return super().do_POST(environ, base_prefix, path, user, *args, **kwargs)
