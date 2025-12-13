@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  caldav-server:
+    build: .
+    ports:
+      - "5232:5232"  # HTTP
+      - "8443:8443"  # HTTPS
+    volumes:
+      # Persist calendar data
+      - ./collections:/app/collections
+    environment:
+      - PYTHONUNBUFFERED=1
+      - API_KEY=${API_KEY:-}
+      - PLANE_URL=${PLANE_URL:-}
+      - WORKSPACE=${WORKSPACE:-default}
+      - USER=${USER:-user}
+      - PASSWORD=${PASSWORD:-pass}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "-k", "https://localhost:8443/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s

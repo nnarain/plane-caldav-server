@@ -1,0 +1,22 @@
+{
+    auto_https off
+    admin off
+    local_certs
+}
+
+http://:5232 {
+    reverse_proxy 127.0.0.1:8080
+    log {
+        output stdout
+        format console
+    }
+}
+
+https://:8443 {
+    tls internal
+    reverse_proxy 127.0.0.1:8080
+    log {
+        output stdout
+        format console
+    }
+}
